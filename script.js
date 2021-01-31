@@ -1,16 +1,15 @@
-$(document).ready(function(){
+
+
+$(document).ready(function(){    
     //first check local storage for any previously saved schedule items
     var items = localStorage.getItem("items"); //var for stored items
-    var itemsParsed = JSON.parse(items); //var for stored items after parsing back into an array
-    console.log(itemsParsed);
     if(items===null){ //if it's not in local storage yet
          //make a new array of 9 empty strings, one for each time block in the schedule
         localStorage.setItem("items", JSON.stringify(["","","","","","","","",""])); //put it in local storage
-        console.log(items);
+        items = localStorage.getItem("items"); //set items to the new stored array
     }
-    else{
-        console.log(items);
-    }
+    
+    var itemsParsed = JSON.parse(items); //store parsed items, should be an array
     
     var timeBlocks = []; //array for block objects
     $("#currentDay").text(moment().format('MMMM Do[,] YYYY'));
@@ -18,7 +17,7 @@ $(document).ready(function(){
         var block = { //block object for all relevant data in a given row
             hour: i,
             ampm: "PM",
-            item: "Lorem ipsum dolor.",
+            item: itemsParsed[i-9],
             rgb: "200, 200, 200",
             number: i-9 //for reference when saving to localStorage later, correlates with its position in the array
         }
@@ -82,7 +81,7 @@ $(document).ready(function(){
         })   
         
         //add new listener to new buttons
-        $(document).find($(".saveBtn")).click(function(){ //when the save button is clicked
+        $(".saveBtn").click(function(){ //when the save button is clicked
             var textarea = $(this).parent().find("textarea");
             console.log(itemsParsed[textarea.data("number")]);
             itemsParsed[textarea.data("number")] = textarea.val(); //update the appropriate index in our items array
