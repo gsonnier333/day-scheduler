@@ -1,12 +1,26 @@
 $(document).ready(function(){
-    var timeBlocks = [];
+    //first check local storage for any previously saved schedule items
+    var items = localStorage.getItem("items"); //var for stored items
+    var itemsParsed = JSON.parse(items); //var for stored items after parsing back into an array
+    console.log(itemsParsed);
+    if(items===null){ //if it's not in local storage yet
+         //make a new array of 9 empty strings, one for each time block in the schedule
+        localStorage.setItem("items", JSON.stringify(["","","","","","","","",""])); //put it in local storage
+        console.log(items);
+    }
+    else{
+        console.log(items);
+    }
+    
+    var timeBlocks = []; //array for block objects
     $("#currentDay").text(moment().format('MMMM Do[,] YYYY'));
     for(var i = 9; i < 18; i++){
-        var block = {
+        var block = { //block object for all relevant data in a given row
             hour: i,
             ampm: "PM",
             item: "Lorem ipsum dolor.",
-            rgb: "200, 200, 200"
+            rgb: "200, 200, 200",
+            number: i-9 //for reference when saving to localStorage later, correlates with its position in the array
         }
         
         //then adjust hour to 12hr format
@@ -42,7 +56,10 @@ $(document).ready(function(){
                 block.rgb = "200, 200, 200"; //past
             }
             
+            block.item = itemsParsed[block.number];
+            
             //now put our time blocks back in with updated text/colors using a dynamically generated div
+            
             //first the row itself
             var row = $("<div>").attr("class", "row");
             $("#schedule").append(row);
@@ -53,15 +70,29 @@ $(document).ready(function(){
             row.append(colLeft);
             
             //then the middle column for text of what's scheduled
-            var colMid = $("<textarea>").attr("class", "col-10").attr("style","background-color: rgb(" + block.rgb + ")");
+            var colMid = $("<textarea>").attr("class", "col-10").attr("style","background-color: rgb(" + block.rgb + ")").attr("data-number", block.number);
             colMid.text(block.item);
             row.append(colMid);
+            itemsParsed[block.number] = block.item; //set the corresponding item in the array to this block's item
+            console.log(itemsParsed[block.number]);
             
             //lastly the right column for the save button
             var colRight = $("<button>").attr("class", "col-1 saveBtn").text("Save");
             row.append(colRight);
         })   
+        
+        //add new listener to new buttons
+        $(document).find($(".saveBtn")).click(function(){ //when the save button is clicked
+            var textarea = $(this).parent().find("textarea");
+            console.log(itemsParsed[textarea.data("number")]);
+            itemsParsed[textarea.data("number")] = textarea.val(); //update the appropriate index in our items array
+            console.log(itemsParsed)
+            localStorage.setItem("items", JSON.stringify(itemsParsed)); //update it in local storage
+        });
     }
-    updateBlocks();
+    
+    updateBlocks(); //load up the blocks for the first time
+    
+    
 })
 
