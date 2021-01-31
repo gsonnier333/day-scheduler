@@ -85,7 +85,6 @@ $(document).ready(function(){
             var textarea = $(this).parent().find("textarea");
             console.log(itemsParsed[textarea.data("number")]);
             itemsParsed[textarea.data("number")] = textarea.val(); //update the appropriate index in our items array
-            console.log(itemsParsed)
             localStorage.setItem("items", JSON.stringify(itemsParsed)); //update it in local storage
         });
     }
