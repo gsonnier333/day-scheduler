@@ -1,2 +1,2 @@
 Deployed at: https://gsonnier333.github.io/day-scheduler/
-!["Blank site"](./Assets/page-example.png)
+!["Page example after 5pm"](./Assets/page-example.PNG)
